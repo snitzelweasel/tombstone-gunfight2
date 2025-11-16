@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tombstone Quick Draw</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Rye&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Landing Page -->
+        <div id="landing-page" class="page active">
+            <div class="background">
+                <div class="sun"></div>
+                <div class="town-silhouette"></div>
+                <div class="dust-particles"></div>
+            </div>
+
+            <div class="content">
+                <div class="game-title-section">
+                    <h1 class="game-title">
+                        <span class="title-main">TOMBSTONE</span>
+                        <span class="title-subtitle">FASTEST GUN IN THE WEST</span>
+                    </h1>
+                </div>
+
+                <div class="menu-options">
+                    <button class="western-btn" id="multiplayer-btn">
+                        <span>MULTIPLAYER DUEL</span>
+                    </button>
+                    <button class="western-btn" id="vs-ai-btn">
+                        <span>VS COMPUTER</span>
+                    </button>
+                </div>
+
+                <div class="flavor-text">
+                    <p>"I'm your huckleberry..."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multiplayer Waiting Room -->
+        <div id="waiting-room" class="page">
+            <div class="background">
+                <div class="sun"></div>
+                <div class="town-silhouette"></div>
+                <div class="dust-particles"></div>
+            </div>
+
+            <div class="content">
+                <h2 class="page-title">FINDING OPPONENT</h2>
+
+                <div class="waiting-spinner">
+                    <p class="waiting-text">Waiting for gunslinger...</p>
+                </div>
+
+                <div class="player-info">
+                    <p>Players in queue: <span id="queue-count">1</span></p>
+                </div>
+
+                <button id="cancel-matchmaking" class="western-btn secondary">
+                    <span>BACK TO MENU</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Character Selection Page -->
+        <div id="character-select" class="page">
+            <div class="background">
+                <div class="sun"></div>
+                <div class="town-silhouette"></div>
+            </div>
+
+            <div class="content">
+                <h2 class="page-title">CHOOSE YOUR GUNSLINGER</h2>
+
+                <div class="character-grid">
+                    <div class="character-card" data-character="wyatt">
+                        <div class="character-portrait wyatt"></div>
+                        <h3>Wyatt Earp</h3>
+                        <p class="character-quote">"You tell 'em I'm coming... and hell's coming with me!"</p>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Speed:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 85%"></div></div>
+                            </div>
+                            <div class="stat">
+                                <span>Accuracy:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 90%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="character-card" data-character="doc">
+                        <div class="character-portrait doc"></div>
+                        <h3>Doc Holliday</h3>
+                        <p class="character-quote">"I have two guns, one for each of ya."</p>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Speed:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 95%"></div></div>
+                            </div>
+                            <div class="stat">
+                                <span>Accuracy:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 80%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="character-card" data-character="johnny">
+                        <div class="character-portrait johnny"></div>
+                        <h3>Johnny Ringo</h3>
+                        <p class="character-quote">"I'm an educated man. Now I really hate him."</p>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Speed:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 88%"></div></div>
+                            </div>
+                            <div class="stat">
+                                <span>Accuracy:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 85%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="character-card" data-character="curly">
+                        <div class="character-portrait curly"></div>
+                        <h3>Curly Bill</h3>
+                        <p class="character-quote">"Well... bye."</p>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Speed:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 65%"></div></div>
+                            </div>
+                            <div class="stat">
+                                <span>Accuracy:</span>
+                                <div class="stat-bar"><div class="fill" style="width: 95%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="back-to-menu" class="western-btn secondary">
+                    <span>BACK TO MENU</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2D Pixel Game Arena -->
+        <div id="game-arena" class="page">
+            <div class="pixel-game-container">
+                <!-- Sky and Sun -->
+                <div class="pixel-sky">
+                    <div class="pixel-sun"></div>
+                </div>
+
+                <!-- Town Buildings -->
+                <div class="pixel-town">
+                    <div class="building saloon"></div>
+                    <div class="building sheriff"></div>
+                    <div class="building bank"></div>
+                    <div class="building store"></div>
+                </div>
+
+                <!-- Street -->
+                <div class="pixel-street"></div>
+
+                <!-- Characters -->
+                <div class="game-characters">
+                    <div class="pixel-character player" id="pixel-player" data-character="wyatt" data-state="idle">
+                        <div class="character-sprite">
+                            <img class="character-image" alt="Player Character">
+                        </div>
+                        <div class="character-shadow"></div>
+                    </div>
+                    <div class="pixel-character opponent" id="pixel-opponent" data-character="doc" data-state="idle">
+                        <div class="character-sprite">
+                            <img class="character-image" alt="Opponent Character">
+                        </div>
+                        <div class="character-shadow"></div>
+                    </div>
+                </div>
+
+                <!-- Draw Buttons -->
+                <div class="draw-buttons">
+                    <button id="player-draw-btn" class="draw-button player-draw" title="Click to draw your gun!">
+                        <span>DRAW!</span>
+                    </button>
+                </div>
+
+                <!-- Clock Tower -->
+                <div class="clock-tower">
+                    <div class="tower-body"></div>
+                    <div class="clock-face">
+                        <div class="clock-hand hour" id="hour-hand"></div>
+                        <div class="clock-hand minute" id="minute-hand"></div>
+                    </div>
+                    <div class="bell" id="bell">🔔</div>
+                </div>
+
+                <!-- Game UI -->
+                <div class="game-ui">
+                    <div class="countdown-display" id="countdown-display">
+                        <div class="countdown-text">GET READY...</div>
+                        <div class="countdown-number" id="countdown-number">10</div>
+                    </div>
+
+                    <div class="crosshair" id="crosshair">+</div>
+
+                    <!-- Speech Bubbles -->
+                    <div class="speech-bubble player-bubble" id="player-speech"></div>
+                    <div class="speech-bubble opponent-bubble" id="opponent-speech"></div>
+
+                    <div class="health-bars">
+                        <div class="player-health">
+                            <div class="health-label">YOU</div>
+                            <div class="health-bar">
+                                <div class="health-fill" id="player-health"></div>
+                            </div>
+                        </div>
+                        <div class="opponent-health">
+                            <div class="health-label">OPPONENT</div>
+                            <div class="health-bar">
+                                <div class="health-fill" id="opponent-health"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-instructions" id="game-instructions">
+                        <p>Wait for the bell... Mouse disabled until go signal</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="back-to-characters" class="western-btn secondary game-back-btn">
+                <span>BACK TO CHARACTERS</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/config.js?v=12"></script>
+    <script src="js/multiplayer.js?v=12"></script>
+    <script src="js/script.js?v=12"></script>
+    <script src="js/pixelgame.js?v=12"></script>
+</body>
+</html>
